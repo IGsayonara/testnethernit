@@ -12,13 +12,16 @@
               v-for="item in packages"
               :key="item.name"
             )
-              v-card
+              v-card(
+                @click="getFullPackageInfo(item.name)"
+              )
                 v-card-title {{ item.name }}
                 v-card-subtitle {{ item.description }}
                 v-card-text
                   .keywords
                     .keyword(
                       v-for="keyword in item.keywords"
+                      :key="keyword"
                     ) {{ keyword }}
         v-col(
           cols="12"
@@ -35,29 +38,38 @@
             :page-class="'page-item'"
           )
           v-card(
-            v-else
+            v-else-if="searchQuery"
           )
             v-card-title Not Found
+    AppModal(
+      v-if="packageInfo"
+      :packageInfo="packageInfo"
+    )
+
+
 
 </template>
 
 <script>
 import agolia from "@/modules/agolia-search"
+import AppModal from "@/components/PackageModal";
 
 export default {
   name: "AppMain",
+  components: {AppModal},
   data: () => ({
     packages: [],
     pages: 0,
-    searchQuery: ""
+    searchQuery: "",
+    packageInfo: null
   }),
   watch: {
-    searchQuery(){
+    searchQuery() {
       this.searchPackages(1);
     }
   },
   methods: {
-    async searchPackages(pageNumber) {
+    async searchPackages(pageNumber){
       if (!pageNumber) return;
       pageNumber--;
       const response = await agolia(this.searchQuery, pageNumber)
@@ -71,27 +83,38 @@ export default {
       window.scrollTo({
         top: 0,
         left: 0,
-        behavior: 'smooth'
+        behavior: "smooth"
       });
     },
+    async getFullPackageInfo(packageName){
+      this.packageInfo = await agolia.getByName(packageName)
+          .catch((err) => {
+            console.log(err);
+          })
+      console.log(this.packageInfo)
+      this.$nextTick(()=>{
+        this.$modal.show("singlePackageModal")
+      })
+    }
   },
-  created() {
+  created(){
     this.searchPackages(1);
   },
   events: {
-    queryChange(value){
+    queryChange(value) {
       this.searchQuery = value;
     }
   }
 }
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 
-.keywords{
+.keywords {
   display: flex;
   flex-wrap: wrap;
-  .keyword{
+
+  .keyword {
     padding: 3px 10px;
     margin-bottom: 3px;
     margin-right: 3px;
@@ -99,7 +122,7 @@ export default {
   }
 }
 
-.pagination{
+.pagination {
   padding-left: 0 !important;
   display: flex;
   width: 100%;
@@ -107,39 +130,45 @@ export default {
   list-style-type: none;
   justify-content: center;
   align-items: center;
-  .page-item{
+
+  .page-item {
     margin: 0 10px 0;
 
     display: flex;
     justify-content: center;
     align-items: center;
     border: 1px solid rgba(0, 0, 0, 0.1);
-    a{
+
+    a {
       width: 50px;
       height: 50px;
       display: flex;
       justify-content: center;
       align-items: center;
-      @media(max-width: 540.1px){
+      @media(max-width: 540.1px) {
         width: 25px;
         height: 25px;
         font-size: 12px;
       }
     }
-    &.active{
+
+    &.active {
       background-color: rgba(0, 0, 0, 0.3);
-      a{
+
+      a {
         cursor: default;
       }
     }
-    &.disabled{
-      a{
+
+    &.disabled {
+      a {
         display: flex;
       }
     }
   }
-  .disabled{
-    a{
+
+  .disabled {
+    a {
       cursor: default;
       display: none;
     }

@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
 import vuetify from './plugins/vuetify'
-import store from './store'
 
 import vueDebounce from 'vue-debounce'
 Vue.use(vueDebounce)
@@ -12,10 +11,12 @@ Vue.use(VueEvents)
 import Paginate from 'vuejs-paginate'
 Vue.component('paginate', Paginate)
 
+import VModal from 'vue-js-modal'
+Vue.use(VModal)
+
 Vue.config.productionTip = false
 
 new Vue({
   vuetify,
-  store,
   render: h => h(App)
 }).$mount('#app')
