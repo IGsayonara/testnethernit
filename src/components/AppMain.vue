@@ -9,7 +9,7 @@
           v-row
             v-col(
               cols="12"
-              v-for="item in packages"
+              v-for="item in getPackages"
               :key="item.name"
             )
               v-card(
@@ -27,18 +27,18 @@
           cols="12"
         )
           paginate(
-            v-if="pages"
-            :page-count="pages"
+            v-if="getPageCounter > 1"
+            :page-count="getPageCounter"
             :page-range="2"
             :margin-pages="1"
-            :click-handler="searchPackages"
+            :click-handler="paginationSearch"
             :prev-text="'<<'"
             :next-text="'>>'"
             :container-class="'pagination'"
             :page-class="'page-item'"
           )
           v-card(
-            v-else-if="searchQuery"
+            v-else-if="getSearchQuery && !getPageCounter"
           )
             v-card-title Not Found
     AppModal(
@@ -54,38 +54,32 @@
 import agolia from "@/modules/agolia-search"
 import AppModal from "@/components/PackageModal";
 
+import { mapGetters, mapActions } from "vuex"
+
 export default {
   name: "AppMain",
   components: {AppModal},
   data: () => ({
-    packages: [],
-    pages: 0,
-    searchQuery: "",
     packageInfo: null
   }),
-  watch: {
-    searchQuery() {
-      this.searchPackages(1);
-    }
+  computed: {
+    ...mapGetters(["getPackages", "getPageCounter", "getSearchQuery"])
+  },
+  created() {
+    this.changeCurrentPage(0)
   },
   methods: {
-    async searchPackages(pageNumber){
-      if (!pageNumber) return;
+    ...mapActions(["changeCurrentPage"]),
+    paginationSearch(pageNumber){
       pageNumber--;
-      const response = await agolia(this.searchQuery, pageNumber)
-          .then(r => r.response)
-          .catch((err) => {
-            console.log(err);
-          })
-      console.log(response)
-      this.packages = response.hits;
-      this.pages = response.nbPages;
+      this.changeCurrentPage(pageNumber);
       window.scrollTo({
         top: 0,
         left: 0,
         behavior: "smooth"
       });
     },
+
     async getFullPackageInfo(packageName){
       this.packageInfo = await agolia.getByName(packageName)
           .catch((err) => {
@@ -97,14 +91,6 @@ export default {
       })
     }
   },
-  created(){
-    this.searchPackages(1);
-  },
-  events: {
-    queryChange(value) {
-      this.searchQuery = value;
-    }
-  }
 }
 </script>
 
@@ -125,7 +111,6 @@ export default {
 .pagination {
   padding-left: 0 !important;
   display: flex;
-  width: 100%;
   width: 100%;
   list-style-type: none;
   justify-content: center;

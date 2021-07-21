@@ -22,11 +22,13 @@
             background-color="rgba(0, 0, 0, 0.5)"
             color="primary"
             append-icon="mdi-magnify"
-            v-debounce:300ms="searchPackages"
+            v-debounce:300ms="debounceChangeQuery"
           )
 </template>
 
 <script>
+
+import { mapActions } from "vuex";
 
 export default {
   name: "AppHeader",
@@ -34,9 +36,15 @@ export default {
     searchValue: null
   }),
   methods: {
-    searchPackages(value) {
-      this.$events.emit('queryChange', value);
-    },
+    ...mapActions(["changeQuery"]),
+    debounceChangeQuery(query){
+      this.changeQuery(query)
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth"
+      });
+    }
   },
 
 }
