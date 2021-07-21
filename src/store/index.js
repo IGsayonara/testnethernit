@@ -1,8 +1,8 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import agolia from "@/modules/agolia-search"
+import Vue from 'vue';
+import Vuex from 'vuex';
+import agolia from "@/modules/agolia-search";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
@@ -28,8 +28,8 @@ export default new Vuex.Store({
           .then(r => r.response)
           .catch((err) => {
             console.log(err);
-          })
-      console.log(response)
+          });
+      //console.log(response);
       commit("UPDATE_PACKAGES", response.hits);
       commit("UPDATE_PAGE_COUNTER", response.nbPages);
       commit("UPDATE_SEARCH_QUERY", searchQuery)
@@ -40,8 +40,8 @@ export default new Vuex.Store({
           .then(r => r.response)
           .catch((err) => {
             console.log(err);
-          })
-      console.log(response)
+          });
+      //console.log(response);
       commit("UPDATE_PACKAGES", response.hits);
       commit("UPDATE_PAGE_COUNTER", response.nbPages);
 

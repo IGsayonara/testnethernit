@@ -38,7 +38,7 @@ export default {
   methods: {
     ...mapActions(["changeQuery"]),
     debounceChangeQuery(query){
-      this.changeQuery(query)
+      this.changeQuery(query);
       window.scrollTo({
         top: 0,
         left: 0,

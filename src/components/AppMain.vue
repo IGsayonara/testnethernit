@@ -51,10 +51,10 @@
 </template>
 
 <script>
-import agolia from "@/modules/agolia-search"
+import agolia from "@/modules/agolia-search";
 import AppModal from "@/components/PackageModal";
 
-import { mapGetters, mapActions } from "vuex"
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "AppMain",
@@ -66,7 +66,7 @@ export default {
     ...mapGetters(["getPackages", "getPageCounter", "getSearchQuery"])
   },
   created() {
-    this.changeCurrentPage(0)
+    this.changeCurrentPage(0);
   },
   methods: {
     ...mapActions(["changeCurrentPage"]),
@@ -85,10 +85,10 @@ export default {
           .catch((err) => {
             console.log(err);
           })
-      console.log(this.packageInfo)
+      // console.log(this.packageInfo);
       this.$nextTick(()=>{
-        this.$modal.show("singlePackageModal")
-      })
+        this.$modal.show("singlePackageModal");
+      });
     }
   },
 }

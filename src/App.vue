@@ -18,11 +18,6 @@ export default {
     AppFooter,
     AppMain,
     AppHeader
-
-  },
-
-  data: () => ({
-    //
-  }),
+  }
 };
 </script>
