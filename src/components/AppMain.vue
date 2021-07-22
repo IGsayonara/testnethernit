@@ -28,6 +28,7 @@
         )
           paginate(
             v-if="getPageCounter > 1"
+            :force-page="getCurrentPage"
             :page-count="getPageCounter"
             :page-range="2"
             :margin-pages="1"
@@ -63,7 +64,7 @@ export default {
     packageInfo: null
   }),
   computed: {
-    ...mapGetters(["getPackages", "getPageCounter", "getSearchQuery"])
+    ...mapGetters(["getPackages", "getPageCounter", "getSearchQuery", "getCurrentPage"])
   },
   created() {
     this.changeCurrentPage(0);
